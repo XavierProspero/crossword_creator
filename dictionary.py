@@ -30,6 +30,29 @@ class Smart_Dictionary:
 
         print_debug("probablity score of penis is: {}".format(self.__find_word_probability_score("penis")))
 
+    def pop_constrained_word(self, length, constraint):
+        # Find a word of given length and that matches the constraing
+        # If nothing is found then return None.
+        # If found then remove this word from the list.
+
+        retval = None
+
+        if length > len(self.SORTED_WORD_LIST):
+            print_info("ERROR: there are no words of length {}".format(length))
+
+        if length != len(constraint):
+            print_info("ERROR: length and constraint length do not match: {} {}".format(length, len(constraint)))
+
+        for word in self.SORTED_WORD_LIST[length]:
+            for idx, letter in enumerate(word):
+                if (constraint[idx] is not "*") and (constraint[idx] is not letter):
+                    break
+            else:
+                retval = word
+                self.SORTED_WORD_LIST[length].remove(word)
+                break
+
+        return retval
 
 
 # Private
@@ -72,24 +95,24 @@ class Smart_Dictionary:
 
         max_len = len(self.WORD_LIST[-1])
 
-        self.SORTED_WORD_LIST = [[]] * (max_len + 1)
+        self.SORTED_WORD_LIST = [[] for _ in range(max_len + 1)]
 
         idx = 0
-        word_len = 1
 
         while idx < len(self.WORD_LIST):
             word = self.WORD_LIST[idx]
-
-            if len(word) == word_len:
-                self.SORTED_WORD_LIST[word_len].append(word)
-            else:
-                word_len += 1
-                self.SORTED_WORD_LIST[word_len].append(word)
+            self.SORTED_WORD_LIST[len(word)].append(word)
 
             idx += 1
+
+        # [print("\n\nlen {}\n\n".format(i), words[:10]) for i, words in enumerate(self.SORTED_WORD_LIST)]
+        # print(self.SORTED_WORD_LIST[22])
 
 
 
 # Tests
 dictionary = Smart_Dictionary()
 dictionary.test()
+
+constraint = "c****e"
+print("\nPopping a constrained word", dictionary.pop_constrained_word(6, constraint))
