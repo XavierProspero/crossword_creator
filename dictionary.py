@@ -6,11 +6,21 @@ from utils import print_info, print_debug
 class Smart_Dictionary:
 
     def __init__(self):
+        print_info("Smart_Dictionary Init Starting")
+
         self.WORD_LIST = [word.lower() for word in words.words()]
         self.LETTER_PROBABILITIES = {}
         self.SORTED_WORD_LIST = []
 
         self.__find_letter_probabilities(self.WORD_LIST)
+
+        print_debug(self.WORD_LIST[:10])
+        self.__sort_words_by_probability()
+        print_debug(self.WORD_LIST[:10])
+
+        self.__sort_words_by_length()
+
+        print_info("Smart_Dictionary Init Finished")
 
 # Public
     def test(self):
@@ -53,11 +63,31 @@ class Smart_Dictionary:
         return score
 
 
-    def __sort_words_by_probability(self, words):
-        return
+    def __sort_words_by_probability(self):
+        # Assumes __find_letter_probabilities() has already been called.
+        self.WORD_LIST = sorted(self.WORD_LIST, key=(lambda x : -1 * self.__find_word_probability_score(x)))
 
-    def __sort_words_by_length(self, words):
-        return
+    def __sort_words_by_length(self):
+        self.WORD_LIST = sorted(self.WORD_LIST, key=(lambda x : len(x)))
+
+        max_len = len(self.WORD_LIST[-1])
+
+        self.SORTED_WORD_LIST = [[]] * (max_len + 1)
+
+        idx = 0
+        word_len = 1
+
+        while idx < len(self.WORD_LIST):
+            word = self.WORD_LIST[idx]
+
+            if len(word) == word_len:
+                self.SORTED_WORD_LIST[word_len].append(word)
+            else:
+                word_len += 1
+                self.SORTED_WORD_LIST[word_len].append(word)
+
+            idx += 1
+
 
 
 # Tests
