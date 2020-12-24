@@ -115,4 +115,4 @@ dictionary = Smart_Dictionary()
 dictionary.test()
 
 constraint = "c****e"
-print("\nPopping a constrained word", dictionary.pop_constrained_word(6, constraint))
+print_debug("\nPopping a constrained word {}".format(dictionary.pop_constrained_word(6, constraint)))
