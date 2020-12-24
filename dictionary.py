@@ -1,3 +1,9 @@
+"""
+    A dictionary containing all english words.
+    You can query the dictionary for words given a length and character constraint.
+    Words are sorted by how often their letters apear in all other words.
+"""
+
 import nltk
 nltk.download('words')
 from nltk.corpus import words
