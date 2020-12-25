@@ -54,5 +54,12 @@ class Grid:
         print_info("puzzle: {}".format(self.grid))
 
 
+    def __find_starting_words(self):
+        # Go through the grid and find where words start.
+        # There is a maximum of two words starting at a square.
+
+        return #FIXME
+
+
 # Test
 Grid("test.puzzle")

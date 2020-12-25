@@ -13,6 +13,14 @@ class Step:
     x: int
     y: int
 
+STEP_RIGHT = Step(1,  0)
+STEP_DOWN  = Step(0, -1)
+
+@dataclass
+class Parents:
+    x: Cell
+    y: Cell
+
 class Cell:
 
     def __init__(self, is_black, pos):
@@ -21,10 +29,14 @@ class Cell:
         self.letter = None
         self.is_black = is_black
         self.pos = pos
+        self.parents = Parents(None, None)
 
 # Public
     def __str__(self):
         return "isblack: {}, pos: {}, letter: {}".format(self.is_black, self.pos, self.letter)
+
+    def GetIsStart(self):
+        return self.is_start
 
     def GetIsBlack(self):
         return self.is_black
@@ -35,14 +47,28 @@ class Cell:
     def SetLetter(self, letter):
         self.letter = letter
 
+    def GetParentX(self):
+        return self.parents.x
+
+    def SetParentX(self, cell):
+        self.parents.x = cell
+
+    def GetParentY(self):
+        return self.parents.y
+
+    def SetParentY(self, cell):
+        self.parents.y = cell
+
 
 class StartCell(Cell):
 
     def __init__(self, cell):
 
+        self.is_start = True
+
         #  These are Steps
-        self.next_letterX = None
-        self.next_letterY = None
+        self.next_letterX = Step(0, 0)
+        self.next_letterY = Step(0, 0)
 
         self.wordX = None
         self.wordY = None
