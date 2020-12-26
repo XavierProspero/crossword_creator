@@ -25,21 +25,24 @@ class Cell:
 
     def __init__(self, is_black, pos):
         # Local variables
-        self.is_start = False
-        self.letter = None
-        self.is_black = is_black
-        self.pos = pos
-        self.parents = Parents(None, None)
+        self.is_start = False                   # bool
+        self.letter = None                      # string
+        self.is_black = is_black                # a bool
+        self.pos = pos                          # a tuple of integers
+        self.parents = Parents(None, None)      # Parents() class.
 
 # Public
     def __str__(self):
         return "isblack: {}, pos: {}, letter: {}".format(self.is_black, self.pos, self.letter)
 
+    def GetPosition(self):
+        return self.pos
+
     def GetIsStart(self):
         return self.is_start
 
-    def GetIsBlack(self):
-        return self.is_black
+    def GetIsWhite(self):
+        return not self.is_black
 
     def GetLetter(self, letter):
         return self.letter
