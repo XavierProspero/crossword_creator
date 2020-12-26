@@ -17,13 +17,33 @@ class Grid:
     def __init__(self, file):
         # Create empty cells
         self.__init_grid_from_file(file)
+        self.__find_starting_words()
 
 # Public
+    def GetCell(self, x, y):
+        if x >= self.N or y >= self.N:
+            return None
+        return self.grid[y][x]
+
+    def GetCellRight(self, cell):
+        # Returns the cell to the right of cell.
+        return self.GetCell(cell.pos[1] + 1, cell.pos[0])
+
+    def GetCellDown(self, cell):
+        # Returns the cell to the left of cell.
+        return self.GetCell(cell.pos[1], cell.pos[0] + 1)
 
 # Private
+    def __str__(self):
+        for row in self.grid:
+            for cell in row:
+                print(cell)
+            print()
+        return ""
+
     def __init_grid_from_file(self, file):
-        BLACK = "b"
-        WHITE = "w"
+        BLACK = ["b", "b\n"]
+        WHITE = ["w", "w\n"]
 
         print_info("reading file named: {}".format(file))
 
@@ -46,7 +66,7 @@ class Grid:
                         print_info("init_grid_from_file: received malformed crossword file.")
                     else:
                         for c_idx, c in enumerate(characters):
-                            is_black = (c is BLACK)
+                            is_black = (c in BLACK)
                             pos = (line_idx, c_idx)
                             self.grid[line_idx][c_idx] = Cell(is_black, pos)
 
@@ -57,9 +77,76 @@ class Grid:
     def __find_starting_words(self):
         # Go through the grid and find where words start.
         # There is a maximum of two words starting at a square.
+        # Read right to left.
+        # DGAF if it's slow.
 
-        return #FIXME
+        for rowIdx, row in enumerate(self.grid):
 
+            for colIdx, cell in enumerate(row):
+
+                cur_cell = cell
+
+                if cur_cell.GetIsWhite():
+                    # See if it's a parent in X
+                    if (
+                            (cur_cell.GetParentX() is None)
+                            # and (print(self.GetCellRight(cur_cell)) or True)
+                            and (self.GetCellRight(cur_cell) is not None)
+                            and self.GetCellRight(cur_cell).GetIsWhite()
+                        ):
+
+                        # Looks like this cell is a new father...
+                        if not cell.IsStart():
+                            new_cell = StartCell(cur_cell)
+                            self.grid[rowIdx][colIdx] = new_cell
+
+                        cur_cell = self.grid[rowIdx][colIdx]
+                        cur_cell.SetParentX(cur_cell)
+                        cur_cell.is_startX = True
+
+                        # Count down to see when this word ends
+                        next_cell = self.GetCellRight(cur_cell)
+
+                        idx = 0
+                        for _ in range(colIdx, self.N - 1):
+                            if next_cell.GetIsWhite():
+                                next_cell.SetParentX(cur_cell)
+                                next_cell = self.GetCellRight(next_cell)
+                                idx += 1
+                            else:
+                                break
+
+                        new_cell.wordXLength = idx
+                    # See if it's a parent in Y
+                    if (
+                            (cur_cell.GetParentY() is None)
+                            and (self.GetCellDown(cur_cell) is not None)
+                            and self.GetCellDown(cur_cell).GetIsWhite()
+                        ):
+                        # Looks like this cell is a new father...
+                        if not cur_cell.IsStart():
+                            new_cell = StartCell(cur_cell)
+                            self.grid[rowIdx][colIdx] = new_cell
+
+                        cur_cell = self.grid[rowIdx][colIdx]
+                        cur_cell.SetParentY(cur_cell)
+                        cur_cell.is_startY = True
+
+                        # Count down to see when this word ends
+                        next_cell = self.GetCellDown(cur_cell)
+
+                        idx = 0
+                        for _ in range(rowIdx, self.N - 1):
+                            if next_cell.GetIsWhite():
+                                next_cell.SetParentY(cur_cell)
+                                next_cell = self.GetCellDown(next_cell)
+                                idx += 1
+                            else:
+                                break
+
+                        new_cell.wordYLength = idx
 
 # Test
-Grid("test.puzzle")
+grid = Grid("test4.puzzle")
+print()
+print_debug(grid)

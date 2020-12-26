@@ -16,30 +16,34 @@ class Step:
 STEP_RIGHT = Step(1,  0)
 STEP_DOWN  = Step(0, -1)
 
-@dataclass
-class Parents:
-    x: Cell
-    y: Cell
-
 class Cell:
 
     def __init__(self, is_black, pos):
         # Local variables
-        self.is_start = False                   # bool
+        self.is_startX = False                  # bool
+        self.is_startY = False                  # bool
         self.letter = None                      # string
         self.is_black = is_black                # a bool
         self.pos = pos                          # a tuple of integers
-        self.parents = Parents(None, None)      # Parents() class.
+        self.parentX = None                     # None means no parent.
+        self.parentY = None
 
 # Public
     def __str__(self):
-        return "isblack: {}, pos: {}, letter: {}".format(self.is_black, self.pos, self.letter)
+        return ("isblack: {}, pos: {}, letter: {}, isstartX {}, IsStartY {}"
+            .format(self.is_black, self.pos, self.letter, self.IsStartX(), self.IsStartY()))
 
     def GetPosition(self):
         return self.pos
 
-    def GetIsStart(self):
-        return self.is_start
+    def IsStart(self):
+        return False
+
+    def IsStartX(self):
+        return self.is_startX
+
+    def IsStartY(self):
+        return self.is_startY
 
     def GetIsWhite(self):
         return not self.is_black
@@ -51,44 +55,38 @@ class Cell:
         self.letter = letter
 
     def GetParentX(self):
-        return self.parents.x
+        return self.parentX
 
     def SetParentX(self, cell):
-        self.parents.x = cell
+        self.parentX = cell
 
     def GetParentY(self):
-        return self.parents.y
+        return self.parentY
 
     def SetParentY(self, cell):
-        self.parents.y = cell
+        self.parentY = cell
 
 
 class StartCell(Cell):
 
     def __init__(self, cell):
-
-        self.is_start = True
-
-        #  These are Steps
-        self.next_letterX = Step(0, 0)
-        self.next_letterY = Step(0, 0)
+        super(StartCell, self).__init__(cell.is_black, cell.GetPosition())
 
         self.wordX = None
         self.wordY = None
 
+        self.wordXLength = 0
+        self.wordYLength = 0
+
 # Public
-    def GetNumWords(self):
-        retval = 0
+    def IsStart(self):
+        return True
 
-        if self.next_letterX:
-            retval += 1
-        if self.next_letterY:
-            retval += 1
+    def GetWordX(self):
+        return self.wordX
 
-        return retval
-
-    def GetWord(self):
-        return word
+    def GetWordY(self):
+        return self.wordY
 
 #Test
 Cell(True, (1, 0))
