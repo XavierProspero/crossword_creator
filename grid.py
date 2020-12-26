@@ -33,6 +33,32 @@ class Grid:
         # Returns the cell to the left of cell.
         return self.GetCell(cell.pos[1], cell.pos[0] + 1)
 
+    def SetWord(self, word, start_cell, step):
+        # step is Step struct
+        # Do some sanity checks.
+        if (
+                (step is STEP_RIGHT and not start_cell.IsStartX())
+                or (step is STEP_DOWN and not start_cell.IsStartY())
+            ):
+            print_info("SetWord() called on non starting cell!")
+            return
+
+        # Handle case of setting word in X.
+        if step is STEP_RIGHT:
+            # FIXME
+
+        else if step is STEP_DOWN:
+            # FIXME
+        else:
+            print_info("SetWord(): wtf is step: {} {}".format(step.x, step.y))
+
+    def FindConstraint(self, start_cell, step):
+        # FIXME
+
+    def ClearWord(self, start_cell, step):
+        # FIXME
+
+
 # Private
     def __str__(self):
         for row in self.grid:
