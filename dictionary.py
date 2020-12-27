@@ -117,8 +117,9 @@ class Smart_Dictionary:
 
 
 # Tests
-dictionary = Smart_Dictionary()
-dictionary.test()
+if __name__ == "__main__":
+    dictionary = Smart_Dictionary()
+    dictionary.test()
 
-constraint = "c****e"
-print_debug("\nPopping a constrained word {}".format(dictionary.pop_constrained_word(6, constraint)))
+    constraint = "c****e"
+    print_debug("\nPopping a constrained word {}".format(dictionary.pop_constrained_word(6, constraint)))
