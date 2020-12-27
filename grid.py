@@ -153,6 +153,11 @@ class Grid:
                 print(line)
             line = ""
 
+    def GetNumWordsMissing(self):
+        num_missing_accross = sum([1 for cell in self._starting_words if cell.wordX == None and cell.wordXLength > 1])
+        num_missing_down = sum([1 for cell in self._starting_words if cell.wordY == None and cell.wordYLength > 1])
+        return num_missing_accross + num_missing_down
+
 
 # Private
     def __str__(self):
@@ -314,3 +319,6 @@ if __name__ == "__main__":
     print()
     grid.write_grid("test.txt")
     grid.write_grid()
+
+    print()
+    print_debug("num words missing = {}".format(grid.GetNumWordsMissing()))
