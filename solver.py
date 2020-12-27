@@ -8,6 +8,7 @@ from utils import print_info, print_debug
 from dictionary import Smart_Dictionary
 from cell import STEP_RIGHT, STEP_DOWN
 
+
 class Solver:
 
     def __init__(self, file_name):
