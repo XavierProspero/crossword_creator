@@ -125,6 +125,10 @@ class Grid:
 
         return retval
 
+    def NumConstraints(self, start_cell, step):
+        constraint = self.FindConstraint(start_cell, step)
+        return len(constraint) - constraint.count('*')
+
     def ClearWord(self, start_cell, step):
         # Clears all letters unless they have another parent.
         next_cell = start_cell
@@ -175,6 +179,22 @@ class Grid:
         num_missing_down = sum([1 for cell in self._starting_words if cell.wordY == None and cell.wordYLength > 1])
         return num_missing_accross + num_missing_down
 
+    def GetMaxConstrainedWord(self):
+        # Returns (starting_cell, direction)
+        most_constrained_cell = (None, None)
+        max_constraint_ratio = -1
+        for cell in self._starting_words:
+            if cell.IsStartX() and cell.wordX == None:
+                constraint_ratio_x = self.NumConstraints(cell, STEP_RIGHT) / cell.wordXLength
+                if constraint_ratio_x  > max_constraint_ratio:
+                    max_constraint_ratio = constraint_ratio_x
+                    most_constrained_cell = (cell, STEP_RIGHT)
+            if cell.IsStartY() and cell.wordY == None:
+                constraint_ratio_y = self.NumConstraints(cell, STEP_DOWN) / cell.wordYLength
+                if constraint_ratio_y  > max_constraint_ratio:
+                    max_constraint_ratio = constraint_ratio_y
+                    most_constrained_cell = (cell, STEP_DOWN)
+        return most_constrained_cell
 
 # Private
     def __str__(self):
@@ -337,3 +357,10 @@ if __name__ == "__main__":
 
     print()
     print_debug("num words missing = {}".format(grid.GetNumWordsMissing()))
+
+    print()
+    grid.SetWord('abc', grid._starting_words[0], STEP_RIGHT)
+    grid.SetWord('def', grid._starting_words[-1], STEP_RIGHT)
+    max_constrained_word = grid.GetMaxConstrainedWord()
+    print_debug('max_constraint = {}'.format(grid.FindConstraint(max_constrained_word[0], max_constrained_word[1])))
+
