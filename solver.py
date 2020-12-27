@@ -5,6 +5,7 @@
 """
 import grid
 import dictionary
+import utils
 
 class Solver:
 
@@ -14,5 +15,6 @@ class Solver:
         self._dictionary = Smart_Dictionary()
 
 # Public
+    def solve1():
 
 # Private

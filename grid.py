@@ -12,12 +12,15 @@
 from cell import Cell, StartCell
 from utils import print_info, print_debug
 
+UNCONSTRAINED = "*"
+
 class Grid:
 
     def __init__(self, file):
         # Create empty cells
         self.__init_grid_from_file(file)
         self.__find_starting_words()
+        self.__list_starting_words()
 
 # Public
     def GetCell(self, x, y):
@@ -35,6 +38,7 @@ class Grid:
 
     def SetWord(self, word, start_cell, step):
         # step is Step struct
+        # returns all positions that were changed.
         # Do some sanity checks.
         if (
                 (step is STEP_RIGHT and not start_cell.IsStartX())
@@ -43,20 +47,87 @@ class Grid:
             print_info("SetWord() called on non starting cell!")
             return
 
+        retval = []
+
         # Handle case of setting word in X.
         if step is STEP_RIGHT:
-            # FIXME
+            if len(word) is not start_cell.wordXLength:
+                print_info("SetWord() word length incorrect")
+                return
 
-        else if step is STEP_DOWN:
-            # FIXME
+            start_cell.wordX = word
+            next_cell = start_cell
+
+            idx = 0
+
+            while (next_cell is not None) or (not next_cell.GetIsWhite()):
+                letter = word[idx]
+
+                if next_cell.GetLetter() is not None:
+                    retval.append(next_cell)
+
+                next_cell.SetLetter(letter)
+                idx += 1
+                next_cell = self.GetCellRight(next_cell)
+
+        elif step is STEP_DOWN:
+            if len(word) is not start_cell.wordYLength:
+                print_info("SetWord() word length incorrect")
+                return
+
+            start_cell.wordY = word
+            next_cell = start_cell
+
+            idx = 0
+
+            while (next_cell is not None) or (not next_cell.GetIsWhite()):
+                letter = word[idx]
+
+                if next_cell.GetLetter() is not None:
+                    retval.append(next_cell)
+
+                next_cell.SetLetter(letter)
+                idx += 1
+                next_cell = self.GetCellDown(next_cell)
+
         else:
             print_info("SetWord(): wtf is step: {} {}".format(step.x, step.y))
 
+        return retval
+
     def FindConstraint(self, start_cell, step):
-        # FIXME
+        # Find constraint from starting word in direction of step.
+        retval = ""
+
+        next_cell = start_cell
+
+        if step is STEP_RIGHT:
+            for _ in range(start_cell.wordXLength):
+                letter = next_cell.GetLetter()
+
+                if letter is None:
+                    retval += UNCONSTRAINED
+                else:
+                    retval += letter
+
+                next_cell = self.GetCellRight(next_cell)
+
+        elif step is STEP_DOWN:
+            for _ in range(start_cell.wordYLength):
+                letter = next_cell.GetLetter()
+
+                if letter is None:
+                    retval += UNCONSTRAINED
+                else:
+                    retval += letter
+
+                next_cell = self.GetCellDown(next_cell)
+
+        return retval
 
     def ClearWord(self, start_cell, step):
         # FIXME
+        return
 
 
 # Private
@@ -172,7 +243,48 @@ class Grid:
 
                         new_cell.wordYLength = idx
 
+    def __list_starting_words(self):
+        # Creates a list of starting words.
+        # Sorts them by number of dependencies.
+
+        self._starting_words = []
+
+        for rowIdx, row in enumerate(self.grid):
+
+            for colIdx, cell in enumerate(row):
+
+                if cell.IsStart():
+                    self._starting_words.append(cell)
+
+        def find_num_dependencies(cell):
+            retval = 0
+            next_cell = cell
+
+
+            if cell.IsStartX:
+                for _ in range(cell.wordXLength):
+                    if next_cell.GetParentY() is not None:
+                        retval += 1
+                    next_cell = self.GetCellRight(next_cell)
+
+            if cell.IsStartY:
+                for _ in range(cell.wordYLength):
+                    if next_cell.GetParentY() is not None:
+                        retval += 1
+                    next_cell = self.GetCellDown(next_cell)
+
+            return -1 * retval
+
+        self._starting_words = sorted(self._starting_words, key=find_num_dependencies)
+
+
+
+
+
 # Test
-grid = Grid("test4.puzzle")
+grid = Grid("test.puzzle")
 print()
 print_debug(grid)
+
+print()
+[print(grid.GetConstraintcell) for cell in grid._starting_words]
