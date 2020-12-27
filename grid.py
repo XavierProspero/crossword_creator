@@ -126,8 +126,25 @@ class Grid:
         return retval
 
     def ClearWord(self, start_cell, step):
-        # FIXME
-        return
+        # Clears all letters unless they have another parent.
+        next_cell = start_cell
+
+        if step is STEP_RIGHT:
+            for _ in range(start_cell.wordXLength):
+
+                if next_cell.GetParentY() is None:
+                    next_cell.letter = None
+
+                next_cell = self.GetCellRight(next_cell)
+
+        if step is STEP_DOWN:
+            for _ in range(start_cell.wordYLength):
+
+                if next_cell.GetParentX() is None:
+                    next_cell.letter = None
+
+                next_cell = self.GetCellDown(next_cell)
+
 
     def write_grid(self, file=None):
         # Write to file if file is not None.
@@ -141,11 +158,11 @@ class Grid:
             for cell in row:
                 if cell.GetIsWhite():
                     if cell.GetLetter() is None:
-                        line += "?"
+                        line += "? "
                     else:
-                        line += cell.GetLetter()
+                        line += cell.GetLetter() + " "
                 else:
-                    line += "+"
+                    line += "+ "
 
             if file is not None:
                 f.write(line + "\n")
@@ -163,8 +180,8 @@ class Grid:
         return ""
 
     def __init_grid_from_file(self, file):
-        BLACK = ["b", "b\n"]
-        WHITE = ["w", "w\n"]
+        BLACK = ["b", "B", "b\n", "B\n"]
+        WHITE = ["w", "W", "w\n", "W\n"]
 
         print_info("reading file named: {}".format(file))
 

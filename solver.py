@@ -28,23 +28,25 @@ class Solver:
             cell = self._grid._starting_words[idx]
 
             if cell.IsStartX():
-                constraint = self._grid.FindConstraint(cell, STEP_RIGHT)
-                word = self._dictionary.pop_constrained_word(len(constraint), constraint)
+                self._grid.ClearWord(cell, STEP_RIGHT)                                      # Clear the word.
+                constraint = self._grid.FindConstraint(cell, STEP_RIGHT)                    # Find the constraint
+                word = self._dictionary.pop_constrained_word(len(constraint), constraint)   # Query dictionary
 
                 if word is not None:
-                    self._grid.SetWord(word, cell, STEP_RIGHT)
+                    self._grid.SetWord(word, cell, STEP_RIGHT)                              # Set the word
                 else:
-                    idx -= 1
+                    idx -= 1                                                                # Backtrack
                     continue
 
             if cell.IsStartY():
-                constraint = self._grid.FindConstraint(cell, STEP_DOWN)
-                word = self._dictionary.pop_constrained_word(len(constraint), constraint)
+                self._grid.ClearWord(cell, STEP_DOWN)                                       # Clear the word.
+                constraint = self._grid.FindConstraint(cell, STEP_DOWN)                     # Find the constraint
+                word = self._dictionary.pop_constrained_word(len(constraint), constraint)   # Query dictionary
 
                 if word is not None:
-                    self._grid.SetWord(word, cell, STEP_DOWN)
+                    self._grid.SetWord(word, cell, STEP_DOWN)                               # Set the word
                 else:
-                    idx -= 1
+                    idx -= 1                                                                # Backtrack
                     continue
 
             idx += 1
@@ -58,7 +60,8 @@ class Solver:
 
 
 # Test
-solver = Solver("test.puzzle")
+solver = Solver("test8.puzzle")
+
 solver.solve1()
 
-solver._grid.write_grid()
+solver._grid.write_grid("test.txt")
