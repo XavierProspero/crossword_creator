@@ -3,9 +3,9 @@
     Uses some shitty variant of a back tracking search to
     find a satisfactory set of words.
 """
-import grid
-import dictionary
-import utils
+from grid import Grid
+from dictionary import Smart_Dictionary
+from utils import print_debug, print_info
 
 class Solver:
 
@@ -15,8 +15,12 @@ class Solver:
         self._dictionary = Smart_Dictionary()
 
 # Public
-    def BacktrackingSearch():
+    def SaveResults(self, output_file):
+        self._grid.write_grid("test.txt")
+
+    def BacktrackingSearch(self):
         pass
+
 # Private
-    def __recursive_backtracking(grid):
-        pass
+    def __recursive_backtracking(self, grid):
+        pass 
