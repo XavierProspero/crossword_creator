@@ -89,4 +89,5 @@ class StartCell(Cell):
         return self.wordY
 
 #Test
-Cell(True, (1, 0))
+if __name__ == "__main__":
+    Cell(True, (1, 0))
