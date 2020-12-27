@@ -48,7 +48,7 @@ class Cell:
     def GetIsWhite(self):
         return not self.is_black
 
-    def GetLetter(self, letter):
+    def GetLetter(self):
         return self.letter
 
     def SetLetter(self, letter):
