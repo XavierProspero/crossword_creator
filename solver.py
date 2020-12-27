@@ -3,9 +3,10 @@
     Uses some shitty variant of a back tracking search to
     find a satisfactory set of words.
 """
-import grid
-import dictionary
-import utils
+from grid import Grid
+from utils import print_info, print_debug
+from dictionary import Smart_Dictionary
+from cell import STEP_RIGHT, STEP_DOWN
 
 class Solver:
 
@@ -15,8 +16,49 @@ class Solver:
         self._dictionary = Smart_Dictionary()
 
 # Public
-    def BacktrackingSearch():
+    def BacktrackingSearch(self):
         pass
+
+    def solve1(self):
+        num_starting_cells = len(self._grid._starting_words)
+
+        idx = 0
+
+        while idx < num_starting_cells and idx >= 0:
+            cell = self._grid._starting_words[idx]
+
+            if cell.IsStartX():
+                constraint = self._grid.FindConstraint(cell, STEP_RIGHT)
+                word = self._dictionary.pop_constrained_word(len(constraint), constraint)
+
+                if word is not None:
+                    self._grid.SetWord(word, cell, STEP_RIGHT)
+                else:
+                    idx -= 1
+                    continue
+
+            if cell.IsStartY():
+                constraint = self._grid.FindConstraint(cell, STEP_DOWN)
+                word = self._dictionary.pop_constrained_word(len(constraint), constraint)
+
+                if word is not None:
+                    self._grid.SetWord(word, cell, STEP_DOWN)
+                else:
+                    idx -= 1
+                    continue
+
+            idx += 1
+
+        if idx < 0:
+            print_info("Solver.solve1: There is no initial word.")
+
 # Private
-    def __recursive_backtracking(grid):
+    def __recursive_backtracking(self, grid):
         pass
+
+
+# Test
+solver = Solver("test.puzzle")
+solver.solve1()
+
+solver._grid.write_grid()

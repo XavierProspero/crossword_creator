@@ -20,9 +20,7 @@ class Smart_Dictionary:
 
         self.__find_letter_probabilities(self.WORD_LIST)
 
-        print_debug(self.WORD_LIST[:10])
         self.__sort_words_by_probability()
-        print_debug(self.WORD_LIST[:10])
 
         self.__sort_words_by_length()
 
