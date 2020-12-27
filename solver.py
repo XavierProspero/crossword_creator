@@ -15,6 +15,8 @@ class Solver:
         self._dictionary = Smart_Dictionary()
 
 # Public
-    def solve1():
-
+    def BacktrackingSearch():
+        pass
 # Private
+    def __recursive_backtracking(grid):
+        pass
