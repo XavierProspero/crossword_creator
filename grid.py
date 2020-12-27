@@ -306,10 +306,11 @@ class Grid:
 
 
 # Test
-grid = Grid("test.puzzle")
-print()
-print_debug(grid)
+if __name__ == "__main__":
+    grid = Grid("test.puzzle")
+    print()
+    print_debug(grid)
 
-print()
-grid.write_grid("test.txt")
-grid.write_grid()
+    print()
+    grid.write_grid("test.txt")
+    grid.write_grid()
