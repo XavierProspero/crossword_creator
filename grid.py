@@ -11,6 +11,7 @@
 """
 from cell import Cell, StartCell
 from utils import print_info, print_debug
+from cell import STEP_RIGHT, STEP_DOWN
 
 UNCONSTRAINED = "*"
 
@@ -59,8 +60,7 @@ class Grid:
             next_cell = start_cell
 
             idx = 0
-
-            while (next_cell is not None) or (not next_cell.GetIsWhite()):
+            while (next_cell is not None) and next_cell.GetIsWhite():
                 letter = word[idx]
 
                 if next_cell.GetLetter() is not None:
@@ -80,7 +80,7 @@ class Grid:
 
             idx = 0
 
-            while (next_cell is not None) or (not next_cell.GetIsWhite()):
+            while (next_cell is not None) and next_cell.GetIsWhite():
                 letter = word[idx]
 
                 if next_cell.GetLetter() is not None:
@@ -126,8 +126,25 @@ class Grid:
         return retval
 
     def ClearWord(self, start_cell, step):
-        # FIXME
-        return
+        # Clears all letters unless they have another parent.
+        next_cell = start_cell
+
+        if step is STEP_RIGHT:
+            for _ in range(start_cell.wordXLength):
+
+                if next_cell.GetParentY() is None:
+                    next_cell.letter = None
+
+                next_cell = self.GetCellRight(next_cell)
+
+        if step is STEP_DOWN:
+            for _ in range(start_cell.wordYLength):
+
+                if next_cell.GetParentX() is None:
+                    next_cell.letter = None
+
+                next_cell = self.GetCellDown(next_cell)
+
 
     def write_grid(self, file=None):
         # Write to file if file is not None.
@@ -141,11 +158,11 @@ class Grid:
             for cell in row:
                 if cell.GetIsWhite():
                     if cell.GetLetter() is None:
-                        line += "?"
+                        line += "? "
                     else:
-                        line += cell.GetLetter()
+                        line += cell.GetLetter() + " "
                 else:
-                    line += "+"
+                    line += "+ "
 
             if file is not None:
                 f.write(line + "\n")
@@ -168,8 +185,8 @@ class Grid:
         return ""
 
     def __init_grid_from_file(self, file):
-        BLACK = ["b", "b\n"]
-        WHITE = ["w", "w\n"]
+        BLACK = ["b", "B", "b\n", "B\n"]
+        WHITE = ["w", "W", "w\n", "W\n"]
 
         print_info("reading file named: {}".format(file))
 
@@ -242,7 +259,7 @@ class Grid:
                             else:
                                 break
 
-                        new_cell.wordXLength = idx
+                        new_cell.wordXLength = idx + 1
                     # See if it's a parent in Y
                     if (
                             (cur_cell.GetParentY() is None)
@@ -270,7 +287,7 @@ class Grid:
                             else:
                                 break
 
-                        new_cell.wordYLength = idx
+                        new_cell.wordYLength = idx + 1
 
     def __list_starting_words(self):
         # Creates a list of starting words.
@@ -279,7 +296,6 @@ class Grid:
         self._starting_words = []
 
         for rowIdx, row in enumerate(self.grid):
-
             for colIdx, cell in enumerate(row):
 
                 if cell.IsStart():
@@ -289,15 +305,14 @@ class Grid:
             retval = 0
             next_cell = cell
 
-
             if cell.IsStartX:
-                for _ in range(cell.wordXLength):
+                for _ in range(cell.wordXLength - 1):
                     if next_cell.GetParentY() is not None:
                         retval += 1
                     next_cell = self.GetCellRight(next_cell)
 
             if cell.IsStartY:
-                for _ in range(cell.wordYLength):
+                for _ in range(cell.wordYLength - 1):
                     if next_cell.GetParentY() is not None:
                         retval += 1
                     next_cell = self.GetCellDown(next_cell)
