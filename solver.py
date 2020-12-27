@@ -17,6 +17,9 @@ class Solver:
         self._dictionary = Smart_Dictionary()
 
 # Public
+    def SaveResults(self, output_file):
+        self._grid.write_grid(output_file)
+
     def BacktrackingSearch(self):
         pass
 
@@ -61,8 +64,9 @@ class Solver:
 
 
 # Test
-solver = Solver("test8.puzzle")
+if __name__ == "__main__":
+    solver = Solver("test8.puzzle")
 
-solver.solve1()
+    solver.solve1()
 
-solver._grid.write_grid("test.txt")
+    solver._grid.write_grid("test.txt")
