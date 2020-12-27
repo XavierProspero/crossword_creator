@@ -129,23 +129,29 @@ class Grid:
         # FIXME
         return
 
-    def write_grid_to_file(self, file):
+    def write_grid(self, file=None):
+        # Write to file if file is not None.
+        # Otherwise print to command file
         BLACK = "+"
-
-        with open(file, 'w') as f:
-            line = ""
-            for row in self.grid:
-                for cell in row:
-                    if cell.GetIsWhite():
-                        if cell.GetLetter() is None:
-                            line += "?"
-                        else:
-                            line += cell.GetLetter()
+        f = None
+        if file is not None:
+            f = open(file, 'w')
+        line = ""
+        for row in self.grid:
+            for cell in row:
+                if cell.GetIsWhite():
+                    if cell.GetLetter() is None:
+                        line += "?"
                     else:
-                        line += "+"
+                        line += cell.GetLetter()
+                else:
+                    line += "+"
 
+            if file is not None:
                 f.write(line + "\n")
-                line = ""
+            else:
+                print(line)
+            line = ""
 
 
 # Private
@@ -305,4 +311,5 @@ print()
 print_debug(grid)
 
 print()
-grid.write_grid_to_file("test.txt")
+grid.write_grid("test.txt")
+grid.write_grid()
