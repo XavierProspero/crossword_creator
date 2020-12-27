@@ -129,6 +129,24 @@ class Grid:
         # FIXME
         return
 
+    def write_grid_to_file(self, file):
+        BLACK = "+"
+
+        with open(file, 'w') as f:
+            line = ""
+            for row in self.grid:
+                for cell in row:
+                    if cell.GetIsWhite():
+                        if cell.GetLetter() is None:
+                            line += "?"
+                        else:
+                            line += cell.GetLetter()
+                    else:
+                        line += "+"
+
+                f.write(line + "\n")
+                line = ""
+
 
 # Private
     def __str__(self):
@@ -287,4 +305,4 @@ print()
 print_debug(grid)
 
 print()
-[print(grid.GetConstraintcell) for cell in grid._starting_words]
+grid.write_grid_to_file("test.txt")
